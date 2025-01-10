@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Week1 Assignment - William</title>
+        <link rel="stylesheet" type="text/css" href="week1_v4.css">
+    </head>
+    <body>
+        <div class="nav">
+            <div class="nav-title">My Website</div>
+            <div class="nav-menu-large">
+                <div>Item1</div>
+                <div>Item2</div>
+                <div>Item3</div>
+                <div>Item4</div>
+            </div>
+            <div class="nav-menu-small">
+                <img onclick="openSideNav();" src="menu.png" alt="menu">
+            </div>
+        </div>
+        <div id="SideNav" class="side-nav">
+            <div>Item 1</div>
+            <div>Item 2</div>
+            <div>Item 3</div>
+            <div>Item 4</div>
+            <img id="close" onclick="closeSideNav();" src="close.png" alt="close">
+        </div>
+
+
+
+        <div class="welcome">
+            <div>Welcome to MyHome</div>
+        </div>
+
+        <div class="grid-container">
+            <div class="promo1 item-promo">
+                <img src="image.JPEG" alt="landscape">
+                <div>Promotion 1</div>
+            </div>
+            <div class="promo2 item-promo">
+                <img src="image.JPEG" alt="landscape">
+                <div>Promotion 2</div>
+            </div>
+            <div class="promo3 item-promo">
+                <img src="image.JPEG" alt="landscape">
+                <div>Promotion 3</div>
+            </div>
+            <div class="title1 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 1</div>
+                </div>
+            </div>
+            <div class="title2 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 2</div>
+                </div>
+            </div>
+            <div class="title3 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 3</div>
+                </div>
+            </div>
+            <div class="title4 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 4</div>
+                </div>
+            </div>
+            <div class="title5 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 5</div>
+                </div>
+            </div>
+            <div class="title6 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 6</div>
+                </div>
+            </div>
+            <div class="title7 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 7</div>
+                </div>
+            </div>
+            <div class="title8 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 8</div>
+                </div>
+            </div>
+            <div class="title9 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 9</div>
+                </div>
+            </div>
+            <div class="title10 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name">
+                    <div>Title 10</div>
+                </div>
+            </div>
+        </div>
+    <script>
+        function openSideNav() {
+            let sidenav = document.querySelector("#SideNav");
+            sidenav.style.width = "55%";
+            let close = document.querySelector("#close");
+            close.style.display = "block";
+        }
+        function closeSideNav() {
+            let sidenav = document.querySelector("#SideNav");
+            sidenav.style.width = "0";
+            let close = document.querySelector("#close");
+            close.style.display = "none";
+        }
+    </script>
+    </body>
+</html> 
