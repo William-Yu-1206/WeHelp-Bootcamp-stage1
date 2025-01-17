@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment-2 游書維 William</title>
+</head>
+<body>
+    <script>
+        console.log("====Task1====");
+        function findAndPrint(messages, currentStation){
+            let station_code={
+                "Xindian": 1,
+                "Xindian City Hall":2,
+                "Qizhang":3,
+                "Xiaobitan": 3,
+                "Dapinglin": 4,
+                "Jingmei": 5,
+                "Wanlong": 6,
+                "Gongguan": 7,
+                "Taipower Building": 8,
+                "Guting": 9,
+                "Chiang Kai-Shek Memorial Hall": 10,
+                "Xiaonanmen": 11,
+                "Ximen": 12,
+                "Beimen": 13,
+                "Zhongshan": 14,
+                "Songjiang Nanjing": 15,
+                "Nanjing Fuxing": 16,
+                "Taipei Arena": 17,
+                "Nanjing Sanmin": 18,
+                "Songshan": 19
+            }
+            // 找出訊息對應的station
+            const friends_station = [];
+            for (let name in messages) {
+                for (let station in station_code) {
+                    if (messages[name].includes(station)) {
+                        friends_station.push(station);
+                        break;
+                    }
+                }
+            }
+            // 計算每一個人位置距離
+            const friends_distance = [];
+            for (let station of friends_station) {
+                let distance = Math.abs(station_code[currentStation] - station_code[station]);
+                // 如果其中一方在Xiaobitan，距離要＋1
+                if (station === "Xiaobitan" & currentStation !== "Xiaobitan") {
+                    distance += 1;
+                } else if (station !== "Xiaobitan" & currentStation === "Xiaobitan") {
+                    distance += 1;
+                }
+                friends_distance.push(distance);
+            }
+            // 得到距離最短的數字
+            const min_distance = Math.min(...friends_distance); //利用展開運算符將array展開
+            // 找到 位置距離 = 距離最短的數字 的index
+            const index = friends_distance.findIndex(function(value) {return value === min_distance});
+            // 先將messages的key值，轉換成1個array，再透過array[index]印出key(name)
+            const name_list = Object.keys(messages);
+            console.log(name_list[index]);
+        };   
+
+        const messages={
+        "Bob":"I'm at Ximen MRT station.",
+        "Mary":"I have a drink near Jingmei MRT station.",
+        "Copper":"I just saw a concert at Taipei Arena.",
+        "Leslie":"I'm at home near Xiaobitan station.",
+        "Vivian":"I'm at Xindian station waiting for you."
+        };
+
+        findAndPrint(messages, "Wanlong"); // print Mary
+        findAndPrint(messages, "Songshan"); // print Copper
+        findAndPrint(messages, "Qizhang"); // print Leslie
+        findAndPrint(messages, "Ximen"); // print Bob
+        findAndPrint(messages, "Xindian City Hall"); // print Vivian
+
+        console.log("====Task2====");
+        function book(consultants, hour, duration, criteria){
+            // 如果顧問沒有busy_hour紀錄，則新增一個array作為紀錄使用
+            consultants.map(obj => {
+                if ("busy_hour" in obj) {
+                    // no action
+                } else {
+                    obj["busy_hour"] = [];
+                }
+            });
+            // 建立客人想要的時間
+            const customer_hour = [];
+            for (let i = hour; i < hour + duration; i++) {
+                customer_hour.push(i);
+            }
+            // 篩選時間可以的consultants
+            const consultants_list = [];
+            consultants.map((obj, index) => {
+                // customer_hour的數字都沒有出現在busy_hour，代表此consultants時間可以
+                if (!customer_hour.some(item => obj["busy_hour"].includes(item))) {
+                    consultants_list.push(consultants[index]);
+                }
+            })
+            // 根據criteria決定誰要去
+            if (consultants_list.length === 0) {
+                console.log("No Service");
+            } else if (criteria === "price") {
+                // 取得最小價格
+                let min = consultants_list
+                    .map(value => value["price"])
+                    .reduce((total, value) => Math.min(total, value));
+                // 誰的price === 最小價格
+                    let chosen = consultants_list.find(value => value["price"] === min);
+                // 印出被挑選的consultants
+                console.log(chosen["name"]);
+                // 調整被挑選consultants的busy_hour
+                chosen["busy_hour"].push(customer_hour);
+                chosen["busy_hour"] = chosen["busy_hour"].flat();
+            } else if (criteria === "rate") {
+                // 取得最高rate
+                let max = consultants_list
+                    .map(value => value["rate"])
+                    .reduce((total, value) => Math.max(total, value));
+                // 誰的rate === 最高rate
+                let chosen = consultants_list.find(value => value["rate"] === max);
+                // 印出被挑選的consultants
+                console.log(chosen["name"]);
+                // 調整被挑選consultants的busy_hour
+                chosen["busy_hour"].push(customer_hour);
+                chosen["busy_hour"] = chosen["busy_hour"].flat();
+            }
+        }
+   
+        const consultants=[
+        {"name":"John", "rate":4.5, "price":1000},
+        {"name":"Bob", "rate":3, "price":1200},
+        {"name":"Jenny", "rate":3.8, "price":800}
+        ];
+
+        book(consultants, 15, 1, "price"); // Jenny
+        book(consultants, 11, 2, "price"); // Jenny
+        book(consultants, 10, 2, "price"); // John
+        book(consultants, 20, 2, "rate"); // John
+        book(consultants, 11, 1, "rate"); // Bob
+        book(consultants, 11, 2, "rate"); // No Service
+        book(consultants, 14, 3, "price"); // John
+
+        console.log("====Task3====");
+        function func(...nameList){
+            // your code here
+            // 取得每一個名字的middle name
+            let middleName = "";
+            let middleNameList = [];
+            nameList.map((name) => {
+                if (name.length === 1) {    // 排除名字誤打1個字的
+                    // no action
+                } else if (name.length >= 4) {
+                    middleName = name[2];
+                 } else {
+                    middleName = name[1];
+                }
+                middleNameList.push(middleName);
+            })
+            // 計算每一個middle name出現次數
+            let count = {};
+            for (let x of middleNameList) {
+                if (count[x] === undefined) {
+                    count[x] = 1;
+                } else {
+                    count[x] += 1;
+                }
+            }
+            // 取出只出現1次的
+            let oneTime = []; 
+            for (let [key, value] of Object.entries(count)) {
+                if (value === 1) {
+                    oneTime.push(key);
+                }
+            }
+            // 針對只出現1次的middle name，找出原本nameList array的index
+            index = [];
+            for (let value of oneTime) {
+                index.push(middleNameList.findIndex(x => x === value));
+            }
+
+            // 以index長度判斷有沒有unique middle name
+            if (index.length === 0) {
+                console.log("沒有");
+            } else {
+                // 以index印出名字
+                let text = "";
+                for (let i of index) {
+                    text += nameList[i] + " ";
+                }
+                text = text.trim();
+                console.log(text);
+            }
+        }
+
+        func("彭大牆", "陳王明雅", "吳明"); // print 彭大牆
+        func("郭靜雅", "王立強", "郭林靜宜", "郭立恆", "林花花"); // print 林花花
+        func("郭宣雅", "林靜宜", "郭宣恆", "林靜花"); // print 沒有
+        func("郭宣雅", "夏曼藍波安", "郭宣恆"); // print 夏曼藍波安
+
+        console.log("====Task4====");
+        function getNumber(index){
+            // your code here
+            let quotient = Math.floor(index / 3);
+            let remainder = index % 3;
+            let number = 0;
+            number = quotient * (4+4-1) + remainder * 4;
+            console.log(number);
+        }
+        
+        getNumber(1); // print 4
+        getNumber(5); // print 15
+        getNumber(10); // print 25
+        getNumber(30); // print 70    
+
+    </script>
+</body>
+</html>
