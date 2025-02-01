@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Week1 Assignment - William</title>
+        <link rel="stylesheet" type="text/css" href="week3_assignment3.css">
+    </head>
+    <body>
+        <div class="nav">
+            <div class="nav-title">My Website</div>
+            <div class="nav-menu-large">
+                <div>Item1</div>
+                <div>Item2</div>
+                <div>Item3</div>
+                <div>Item4</div>
+            </div>
+            <div class="nav-menu-small">
+                <img onclick="openSideNav();" src="menu.png" alt="menu">
+            </div>
+        </div>
+        <div id="SideNav" class="side-nav">
+            <div>Item 1</div>
+            <div>Item 2</div>
+            <div>Item 3</div>
+            <div>Item 4</div>
+            <img id="close" onclick="closeSideNav();" src="close.png" alt="close">
+        </div>
+
+
+
+        <div class="welcome">
+            <div>Welcome to MyHome</div>
+        </div>
+
+        <div class="grid-container">
+            <div class="promo1 item-promo"></div>
+            <div class="promo2 item-promo"></div>
+            <div class="promo3 item-promo"></div>
+            <div class="title1 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+            <div class="title2 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+            <div class="title3 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+            <div class="title4 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+            <div class="title5 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+            <div class="title6 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+            <div class="title7 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+            <div class="title8 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+            <div class="title9 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+            <div class="title10 item-title">
+                <div class="title-star">
+                    <img src="star.png" alt="star icon">
+                </div>
+                <div class="title-name"></div>
+            </div>
+        </div>
+    <script>
+        function openSideNav() {
+            let sidenav = document.querySelector("#SideNav");
+            sidenav.style.width = "55%";
+            let close = document.querySelector("#close");
+            close.style.display = "block";
+        }
+        function closeSideNav() {
+            let sidenav = document.querySelector("#SideNav");
+            sidenav.style.width = "0";
+            let close = document.querySelector("#close");
+            close.style.display = "none";
+        }
+
+        // week3
+        async function getData() {
+            // 連線
+            let response = await fetch("https://padax.github.io/taipei-day-trip-resources/taipei-attractions-assignment-1");
+            let data = await response.json();
+            data = data["data"]["results"];
+
+            // 取得title, img，2個list
+            let title_list = [];
+            for (let spot of data) {
+                title_list.push(spot["stitle"]);
+            }
+            let jpg_list = [];
+            for (let spot of data) {
+                let url_lower_case = spot.filelist.toLowerCase();
+                let num = url_lower_case.indexOf('jpg') + 'jpg'.length;
+                let jpg = spot.filelist.slice(0, num);
+                jpg_list.push(jpg);
+            }
+            
+            // 先處理3個small boxes
+            let promo_node_list = document.querySelectorAll(".grid-container > .item-promo");
+            for (let i=0; i<promo_node_list.length; i++) {
+                let img = document.createElement("img");
+                let title = document.createElement("div");
+                img.src = jpg_list[i];
+                img.alt = "landscape";
+                title.innerText = title_list[i];
+                promo_node_list[i].appendChild(img);
+                promo_node_list[i].appendChild(title);
+            }
+            // 處理後續10個big boxes
+            let title_node_list = document.querySelectorAll(".grid-container > .item-title");
+            // 放上背景圖片
+            for (let i=0; i<title_node_list.length; i++) {
+                title_node_list[i].style.backgroundImage = "url(" + jpg_list[promo_node_list.length + i] + ")";
+            }
+            // 放上名稱
+            let all_title_name = document.querySelectorAll(".grid-container > .item-title > .title-name");
+            for (let i=0; i<all_title_name.length; i++) {
+                let title = document.createElement("div");
+                title.innerHTML = title_list[promo_node_list.length + i];
+                title.className = "name";
+                all_title_name[i].appendChild(title);
+            }
+        }
+        getData();
+        
+    </script>
+    </body>
+</html> 
