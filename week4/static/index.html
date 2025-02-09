@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="signin">
+        <div class="title">歡迎光臨，請輸入帳號密碼</div>
+        <div class="subtitle">登入系統</div>
+        <form id="loginForm" action="/signin" method="post">
+            帳號 <input type="text" name="username"><br>
+            密碼 <input type="text" name="password"><br>
+            同意條款 <input type="checkbox" id="checkbox"><br>
+            <input type="button" onclick="toSignIn()" value="登入">
+        </form>
+    </div>
+    
+    
+    <script>
+        function toSignIn(){
+            const elem = document.querySelector("#checkbox");
+            if (elem.checked === false){
+                alert("Please check the checkbox first.");
+            } else {
+                document.querySelector("#loginForm").submit();
+            }
+        }
+    </script>
+    
+</body>
+</html>
