@@ -1,7 +1,7 @@
 # Assignment - Week 5
 ## Task 2:Create database and table in your MySQL server 
 - Create a new database named website.
-```
+```sql
 create database website;
 ```
 ![2-1](imgs/2-1.png)
