@@ -1,0 +1,34 @@
+body{
+    margin: 0;
+}
+hr {
+    border: 0.5px solid lightgray;
+    margin: 15px 0px;
+}
+.member{
+    text-align: center;
+}
+.title{
+    background-color: rgb(34, 34, 109);
+    color: aliceblue;
+    margin: 0px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.button{
+    margin: 10px;
+}
+.input-message{
+    text-align: center;
+    line-height: 35px;
+}
+.message-title{
+    font-weight: 500;
+}
+.content{
+    list-style-type: none;
+    text-align: center;
+}
+.content-name{
+    font-weight: 500;
+}

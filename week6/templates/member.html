@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員頁</title>
+    <link rel="stylesheet" href="static/member.css">
+</head>
+<body>
+    <div class="member">
+        <h3 class="title">歡迎光臨，這是會員頁</h3>
+        <div>{{ name }}，歡迎登入系統</div>
+        <button onclick="toSignout();" class="button">登出系統</button>
+    </div>
+    <hr>
+    <div class="input-message">
+        <div class="message-title">快來留言吧</div>
+        <form action="/createMessage" method="post">
+            內容： <input type="text" name="message"><br>
+            <input type="submit" value="送出">
+        </form>
+    </div>
+    <hr>
+    <div>
+        <ul class="content">
+        {% for line in message %}
+            <li>
+                <span class="content-name">{{ line[0] }}：</span>
+                <span>{{ line[1] }}</span>
+                {% if line[2] == 1 %}
+                <button onclick="toDeleteMessage({{ line[3] }});">x</button>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    
+    <script>
+        async function toSignout(){
+            let response = await fetch("/signout", {
+                method: "GET"
+            });
+            if (response.redirected === true) {
+                window.location.href = response.url;
+            }
+        }
+
+        async function toDeleteMessage(message_id) {
+            let response = await fetch("/deleteMessage", {
+                method: "POST",
+                body: JSON.stringify({"message_id": message_id})
+            });
+            if (response.redirected === true) {
+                window.location.href = response.url
+            };
+        }
+    </script>
+</body>
+</html>

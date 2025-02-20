@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員登入</title>
+    <link rel="stylesheet" href="static/homepage.css">
+</head>
+<body>
+    <div class="sign">
+        <h2 class="title">歡迎光臨，請註冊登入系統</h2>
+        <form action="/signup" method="post" class="form" id="signup-form">
+            <div class="subtitle">註冊帳號</div>
+            姓名 <input type="text" name="name" id="signup-name"><br>
+            帳號 <input type="text" name="username" id="signup-username"><br>
+            密碼 <input type="text" name="password" id="signup-password"><br>
+            <div id="signup-hint" class="hint">{{ signup }}</div>
+            <input type="button" value="註冊" onclick="signup();">
+        </form>
+
+        <hr>
+
+        <form action="/signin" method="post" class="form" id="signin-form">
+            <div class="subtitle">登入系統</div>
+            帳號 <input type="text" name="username" id="signin-username"><br>
+            密碼 <input type="text" name="password" id="signin-password"><br>
+            <div id="signin-hint"></div>
+            <input type="button" value="登入" onclick="signin();">
+        </form>
+    </div>
+
+    <script>
+        function signup(){
+            const form = document.querySelector("#signup-form")
+            const name = document.querySelector("#signup-name");
+            const username = document.querySelector("#signup-username");
+            const password = document.querySelector("#signup-password");
+            const submit = document.querySelector("#signup-submit");
+            const hint = document.querySelector("#signup-hint")
+            if (
+                name.value === "" |
+                username.value === "" | 
+                password.value === ""
+            ) {
+                hint.textContent="姓名、帳號、名稱都是必填"
+                hint.style.color="red"
+                hint.style.fontSize="14px"
+            } else if (
+                name.value.includes(" ") | 
+                username.value.includes(" ") |
+                password.value.includes(" ")
+            ) {
+                hint.textContent="請勿輸入空白"
+                hint.style.color="red"
+                hint.style.fontSize="14px"
+            } else (
+                form.submit()
+            )
+        };
+        function signin(){
+            const form = document.querySelector("#signin-form");
+            const username = document.querySelector("#signin-username");
+            const password = document.querySelector("#signin-password");
+            const hint = document.querySelector("#signin-hint");
+            if (username.value === "" | password.value === "") {
+                hint.textContent = "帳號, 密碼不能是空白";
+                hint.style.color = "red";
+                hint.style.fontSize = "14px";
+            } else {
+                form.submit();
+            }
+        };
+    </script>
+</body>
+</html>

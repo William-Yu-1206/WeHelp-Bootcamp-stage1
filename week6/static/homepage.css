@@ -1,0 +1,26 @@
+body{
+    margin: 0px;
+}
+.sign{
+    text-align: center;
+}
+.title{
+    background-color: rgb(34, 34, 109);
+    color: aliceblue;
+    margin: 0px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.form{
+    line-height: 30px;
+}
+.subtitle{
+    font-weight: 500;
+}
+.hint{
+    font-size: 14px;
+    color: blue;
+}
+hr {
+    border: 0.5px solid lightgray;
+}

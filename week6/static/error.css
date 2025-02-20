@@ -1,0 +1,16 @@
+body{
+    margin: 0;
+}
+.error{
+    text-align: center;
+}
+.title{
+    background-color: rgb(34, 34, 109);
+    color: aliceblue;
+    margin: 0px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.message{
+    font-size: 20px;
+}
