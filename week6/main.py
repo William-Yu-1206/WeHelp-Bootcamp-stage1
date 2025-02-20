@@ -2,7 +2,7 @@
 import mysql.connector
 con = mysql.connector.connect(
     user="root",
-    password="123456789", # 密碼空白
+    password="", # 密碼空白
     host="localhost",
     database="website"
 )
