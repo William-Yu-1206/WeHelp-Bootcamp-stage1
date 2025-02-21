@@ -19,9 +19,9 @@ import json
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="qwdnf-werrf-123fds")
 
-template = Jinja2Templates(directory="week6/templates")
+template = Jinja2Templates(directory="templates")
 
-app.mount("/static", StaticFiles(directory="week6/static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/")
@@ -124,9 +124,14 @@ async def createMessage(
     return RedirectResponse("/member", status_code=303)
 
 @app.post("/deleteMessage")
-async def deleteMessage(body=Body(None)):
+async def deleteMessage(request: Request, body=Body(None)):
     data = json.loads(body)
+
     with con.cursor() as cursor:
-        cursor.execute("delete from message where id=%s", (data["message_id"], ))
-        con.commit()
+        cursor.execute("select member_id from message where id = %s", (data["message_id"], ))
+        member_id_from_front = cursor.fetchone()[0]
+        if member_id_from_front == request.session["member_id"]:
+            cursor.execute("delete from message where id=%s", (data["message_id"], ))
+            con.commit()
+    
     return RedirectResponse("/member", status_code=303)
