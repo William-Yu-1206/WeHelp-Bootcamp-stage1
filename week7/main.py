@@ -130,8 +130,8 @@ async def deleteMessage(request: Request, body: DeleteMessage):
             query = "select member_id from message where id = %s"
             value = (body.message_id, )
             cursor.execute(query, value)
-            data = cursor.fetchone()
-            if data[0] == request.session["id"]:
+            member_id_from_front = cursor.fetchone()[0]
+            if member_id_from_front == request.session["id"]:
                 query = "delete from message where id = %s"
                 value = (body.message_id, )
                 cursor.execute(query, value)
