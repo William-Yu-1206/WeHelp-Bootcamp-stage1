@@ -72,6 +72,7 @@ async def signin(body: SignIn, request: Request):
         cursor.execute(query, value)
         data = cursor.fetchone()
         if data:
+            request.session["SIGN-IN"] = True
             request.session["id"] = data[0]
             request.session["name"] = data[1]
             request.session["username"] = data[2]
@@ -82,21 +83,23 @@ async def signin(body: SignIn, request: Request):
 
 @app.get("/member")
 async def member(request: Request):
-    if request.session:
-        with con.cursor() as cursor:
-            query = "select member.name, message.id, message.member_id=%s, message.content from message inner join member on message.member_id = member.id order by message.id desc"
-            value = (request.session["id"], )
-            cursor.execute(query, value)
-            data = cursor.fetchall()
-        return template.TemplateResponse(
-        request=request,
-        name="member.html",
-        context={
-            "name": request.session["name"],
-            "message": data
-        })
-    else:
+    # determine whether logged in or not
+    if "SIGN-IN" not in request.session or request.session["SIGN-IN"] != True:
+        request.session.clear()
         return RedirectResponse("/")
+    # if login is successful
+    with con.cursor() as cursor:
+        query = "select member.name, message.id, message.member_id=%s, message.content from message inner join member on message.member_id = member.id order by message.id desc"
+        value = (request.session["id"], )
+        cursor.execute(query, value)
+        data = cursor.fetchall()
+    return template.TemplateResponse(
+    request=request,
+    name="member.html",
+    context={
+        "name": request.session["name"],
+        "message": data
+    })
 
 @app.get("/signout")
 async def signout(request: Request):
@@ -109,15 +112,18 @@ class CreateMessage(BaseModel):
 
 @app.post("/createMessage")
 async def createMessage(request: Request, body: CreateMessage):
-    if request.session:
-        with con.cursor() as cursor:
-            query = "insert into message(member_id, content) values(%s, %s)"
-            values = (request.session["id"], body.message)
-            cursor.execute(query, values)
-            con.commit()
-        return RedirectResponse("/member", status_code=303)
-    else:
+    # determine whether logged in or not
+    if "SIGN-IN" not in request.session or request.session["SIGN-IN"] != True:
+        request.session.clear()
         return RedirectResponse("/", status_code=303)
+    
+    with con.cursor() as cursor:
+        query = "insert into message(member_id, content) values(%s, %s)"
+        values = (request.session["id"], body.message)
+        cursor.execute(query, values)
+        con.commit()
+    return RedirectResponse("/member", status_code=303)
+    
 
 
 class DeleteMessage(BaseModel):
@@ -125,46 +131,59 @@ class DeleteMessage(BaseModel):
 
 @app.post("/deleteMessage")
 async def deleteMessage(request: Request, body: DeleteMessage):
-    if request.session:
-        with con.cursor() as cursor:
-            query = "select member_id from message where id = %s"
+    # determine whether logged in or not
+    if "SIGN-IN" not in request.session or request.session["SIGN-IN"] != True:
+        request.session.clear()
+        return RedirectResponse("/", status_code=303)
+    
+    with con.cursor() as cursor:
+        query = "select member_id from message where id = %s"
+        value = (body.message_id, )
+        cursor.execute(query, value)
+        member_id_from_front = cursor.fetchone()[0]
+        if member_id_from_front == request.session["id"]:
+            query = "delete from message where id = %s"
             value = (body.message_id, )
             cursor.execute(query, value)
-            member_id_from_front = cursor.fetchone()[0]
-            if member_id_from_front == request.session["id"]:
-                query = "delete from message where id = %s"
-                value = (body.message_id, )
-                cursor.execute(query, value)
-                con.commit()
-    return RedirectResponse("/member", status_code=303)
+            con.commit()
+    
 
 @app.get("/api/member")
 async def queryName(request: Request, username: str | None = None):
-    if request.session:
-        with con.cursor() as cursor:
-            query = "select id, name, username from member where username = %s"
-            value = (username, )
-            cursor.execute(query, value)
-            data = cursor.fetchone()
-            if data:
-                result = {
-                    "data": {
-                        "id": data[0],
-                        "name": data[1],
-                        "username": data[2]
-                    }
+    # determine whether logged in or not
+    if "SIGN-IN" not in request.session or request.session["SIGN-IN"] != True:
+        request.session.clear()
+        return {"data": None}
+    
+    with con.cursor() as cursor:
+        query = "select id, name, username from member where username = %s"
+        value = (username, )
+        cursor.execute(query, value)
+        data = cursor.fetchone()
+        if data:
+            result = {
+                "data": {
+                    "id": data[0],
+                    "name": data[1],
+                    "username": data[2]
                 }
-            else:
-                result = {"data": None}
-            return result
-    return RedirectResponse("/")
+            }
+        else:
+            result = {"data": None}
+        return result
+    
 
 class UpdateName(BaseModel):
     name: str
 
 @app.patch("/api/member")
 async def updateName(request: Request, body: UpdateName):
-    if request.session:
+    # determine whether logged in or not
+    if "SIGN-IN" not in request.session or request.session["SIGN-IN"] != True:
+        request.session.clear()
+        return {"error": True}
+    
+    try:
         with con.cursor() as cursor:
             query = "update member set name = %s where id = %s"
             values = (body.name, request.session["id"])
@@ -172,4 +191,5 @@ async def updateName(request: Request, body: UpdateName):
             con.commit()
         request.session["name"] = body.name
         return {"ok": True}
-    return {"error": True}
+    except:
+        return {"error": True}
