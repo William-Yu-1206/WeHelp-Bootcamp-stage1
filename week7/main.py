@@ -1,9 +1,9 @@
 import mysql.connector
 con = mysql.connector.connect(
     user="root",
-    password="123456789",
+    password="", 
     host="localhost",
-    database="week6"
+    database="website"
 )
 
 from fastapi import FastAPI, Request
