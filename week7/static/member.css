@@ -1,0 +1,35 @@
+body {
+    text-align: center;
+    line-height: 30px;
+    margin: 0;
+    font-size: 18px;
+}
+hr {
+    border: 0.5px solid lightgray;
+    margin: 20px 0px;
+}
+.header{
+    background-color: rgb(34, 34, 96);
+    color: white;
+    font-weight: 500;
+    font-size: 28px;
+    padding: 20px 0px;
+}
+.welcome {
+    margin: 20px 0px;
+}
+.message {
+    height: 360px;
+    overflow: auto;
+}
+.subtitle {
+    font-weight: 600;
+   
+    margin-bottom: 10px;
+}
+.query-name-div {
+    margin-bottom: 10px;
+}
+.footer {
+    height: 100px;
+}

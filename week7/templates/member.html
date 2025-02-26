@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員頁面</title>
+    <link rel="stylesheet" href="static/member.css">
+</head>
+<body>
+    <div class="header">
+        歡迎光臨，這是會員頁
+    </div>
+    <div class="welcome">
+        <div><span id="welcome-name">{{ name }}</span>，歡迎登入系統</div>
+        <div><a href="/signout">登出系統</a></div>
+    </div>
+    
+    <hr>
+
+    <div class="leave-message">
+        <div class="subtitle">快來留言吧</div>
+        內容 <input type="text" id="leave-message"><br>
+        <button onclick="createMessage();">送出</button>
+    </div>
+
+    <hr>
+
+    <div class="message">
+        {% for line in message %}
+        <div>
+            <span id="message-name">{{ line[0] }}</span>
+            <span> : {{ line[3] }}</span>
+            {% if line[2] == 1 %}
+                <button onclick="deleteMessage({{ line[1] }});">x</button>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    
+
+    <hr>
+
+    <div class="query-name-div">
+        <div class="subtitle">查詢會員姓名</div>
+        <input type="text" id="query-name">  <button onclick="queryName();">查詢</button>
+        <div id="query-name-result"></div>
+    </div>
+    
+    <div class="update-name-div">
+        <div class="subtitle">更新我的姓名</div>
+        <input type="text" id="update-name">  <button onclick="updateName();">更新</button>
+        <div id="update-name-result"></div>
+    </div>
+
+    <div class="footer"></div>
+    
+
+    <script>
+        async function createMessage() {
+            let message = document.querySelector("#leave-message");
+            let response = await fetch("/createMessage", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    "message": message.value
+                })
+            });
+            if (response.redirected === true) {
+                window.location.href = response.url
+            }
+        }
+        async function deleteMessage(message_id) {
+            let response = await fetch("/deleteMessage", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    "message_id": message_id
+                })
+            });
+            if (response.redirected === true) {
+                window.location.href = response.url;
+            }
+        }
+        async function queryName() {
+            let queryName = document.querySelector("#query-name");
+            let result = document.querySelector("#query-name-result");
+            let response = await fetch("/api/member?username="+queryName.value, {
+                method: "GET",
+            });
+            let data = await response.json();
+            if (data["data"] !== null) {
+                result.textContent = data["data"]["name"] + " (" + data["data"]["username"] + ")";
+                queryName.value = "";
+            } else {
+                result.textContent = "查無此人";
+                queryName.value = "";
+            }
+        }
+        async function updateName() {
+            let updateName = document.querySelector("#update-name");
+            let updateResult = document.querySelector("#update-name-result");
+            if (updateName.value === "" || updateName.value.includes(" ")) {
+                updateResult.textContent = "更新失敗";
+            } else {
+                let response = await fetch("/api/member", {
+                method: "PATCH",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    "name": updateName.value
+                })
+                });
+                let data = await response.json();
+                if (data.ok === true) {
+                    updateResult.textContent = "更新成功";
+                    // update welcome name
+                    let welcomeName = document.querySelector("#welcome-name");
+                    let oldname = welcomeName.textContent;
+                    welcomeName.textContent = updateName.value;
+                    
+                    // update message name
+                    let messageName = document.querySelectorAll(".message #message-name");
+                    for (let i=0; i<messageName.length; i++) {
+                        if (messageName[i].textContent === oldname) {
+                            messageName[i].textContent = updateName.value;
+                        }
+                    }
+                    // become blank
+                    updateName.value = "";
+                } else {
+                    updateResult.textContent = "更新失敗";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

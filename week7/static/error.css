@@ -1,0 +1,16 @@
+body {
+    text-align: center;
+    line-height: 30px;
+    margin: 0;
+    font-size: 18px;
+}
+.header{
+    background-color: rgb(34, 34, 96);
+    color: white;
+    font-weight: 500;
+    font-size: 28px;
+    padding: 20px 0px;
+}
+.content{
+    margin: 20px 0px;
+}

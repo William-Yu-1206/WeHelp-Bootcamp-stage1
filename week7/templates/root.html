@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首頁</title>
+    <link rel="stylesheet" href="static/root.css">
+</head>
+<body>
+    <div class="header">
+        歡迎光臨，請註冊登入系統
+    </div>
+
+    <div class="signup">
+        <h3>註冊帳號</h3>
+        姓名  <input type="text" id="signup-name"><br>
+        帳號  <input type="text" id="signup-username"><br>
+        密碼  <input type="text" id="signup-password"><br>
+        <div id="signup-hint"></div>
+        <button onclick="sendSignUp();">註冊</button>
+    </div>
+    
+    <hr>
+
+    <div class="signin">
+        <h3>登入系統</h3>
+        帳號 <input type="text" id="signin-username"><br>
+        密碼 <input type="text" id="signin-password"><br>
+        <div id="signin-hint"></div>
+        <button onclick="sendSignin();">登入</button>
+    </div>
+    
+    <hr>
+
+    <script>
+        async function sendSignUp() {
+            let name = document.querySelector("#signup-name");
+            let username = document.querySelector("#signup-username");
+            let password = document.querySelector("#signup-password");
+            let hint = document.querySelector("#signup-hint")
+            if (name.value === "" | username.value === "" | password.value === "") {
+                hint.textContent = "姓名、帳號、密碼都是必填";
+                hint.style.color = "red";
+                hint.style.fontSize = "14px"
+            } else if (name.value.includes(" ") | username.value.includes(" ") | password.value.includes(" ")) {
+                hint.textContent = "請勿輸入空白";
+                hint.style.color = "red";
+                hint.style.fontSize = "14px"
+            } else {
+                let response = await fetch("/signup", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    "name": name.value,
+                    "username": username.value,
+                    "password": password.value
+                })
+                });
+                if (response.redirected === true & response.url.includes("error")) {
+                    window.location.href = response.url;
+                } else if (response.redirected === true & !response.url.includes("error")) {
+                    name.value="";
+                    username.value="";
+                    password.value="";
+                    hint.textContent = "註冊成功";
+                    hint.style.color = "blue";
+                    hint.style.fontSize = "14px"
+                }
+            }
+        }
+
+        async function sendSignin() {
+            let username = document.querySelector("#signin-username");
+            let password = document.querySelector("#signin-password");
+            let hint = document.querySelector("#signin-hint");
+            if (username.value === "" | password.value === "") {
+                hint.textContent = "請輸入帳號密碼";
+                hint.style.color = "red";
+                hint.style.fontSize = "14px"
+            } else if (username.value.includes(" ") | password.value.includes(" ")) {
+                hint.textContent = "請勿輸入空白值"
+                hint.style.color = "red";
+                hint.style.fontSize = "14px"
+            } else {
+                let response = await fetch("/signin", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        "username": username.value,
+                        "password": password.value
+                    })
+                });
+                if (response.redirected === true) {
+                    window.location.href = response.url;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
