@@ -1,7 +1,7 @@
 import mysql.connector
 con = mysql.connector.connect(
     user="root",
-    password="", 
+    password="123456789", 
     host="localhost",
     database="website"
 )
@@ -146,6 +146,7 @@ async def deleteMessage(request: Request, body: DeleteMessage):
             value = (body.message_id, )
             cursor.execute(query, value)
             con.commit()
+    return RedirectResponse("/member", status_code=303)
     
 
 @app.get("/api/member")
