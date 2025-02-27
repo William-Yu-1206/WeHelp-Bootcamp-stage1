@@ -156,7 +156,7 @@ async def queryName(request: Request, username: str | None = None):
         request.session.clear()
         return {"data": None}
     
-    with con.cursor() as cursor:
+    with con.cursor(dictionary=True) as cursor:
         query = "select id, name, username from member where username = %s"
         value = (username, )
         cursor.execute(query, value)
@@ -164,9 +164,9 @@ async def queryName(request: Request, username: str | None = None):
         if data:
             result = {
                 "data": {
-                    "id": data[0],
-                    "name": data[1],
-                    "username": data[2]
+                    "id": data["id"],
+                    "name": data["name"],
+                    "username": data["username"]
                 }
             }
         else:
